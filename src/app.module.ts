@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { BoardModule } from './board/board.module';
-import { AuthModule } from './auth/auth.module';
+import { BoardsModule } from './boards/boards.module';
 
 @Module({
-  imports: [BoardModule, AuthModule],
+  imports: [BoardsModule],
   controllers: [],
   providers: [],
 })
