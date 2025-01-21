@@ -38,7 +38,14 @@ export class BoardsService {
         return savedBoard;
     }
 
+    // 특정 번호의 게시글 일부 수정
+    updateBoardStatusById(id: number, status: BoardStatus): Board {
+        const foundBoard = this.getBoardDetailById(id);
+        foundBoard.status = status;
+        return foundBoard;
+    }
 
+    // 게시글 삭제 기능
     deleteBoardById(id: number): void {
         this.boards = this.boards.filter((board) => board.id != id);
     }
