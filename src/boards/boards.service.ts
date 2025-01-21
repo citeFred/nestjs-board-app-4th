@@ -18,6 +18,11 @@ export class BoardsService {
         return this.boards.find((board) => board.id == id)
     }
 
+    // 키워드(작성자)로 검색한 게시글 조회 기능
+    getBoardsByKeyword(author: string): Board[] {
+        return this.boards.filter((board) => board.author === author);
+    }
+
     // 게시글 작성 기능
     createBoard(createBoardDto: CreateBoardDto) {
         const {author, title, contents} = createBoardDto;
