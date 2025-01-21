@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Board } from './boards.entity';
 import { BoardStatus } from './boards-status.enum';
+import { CreateBoardDto } from './dto/create-board.dto';
 
 @Injectable()
 export class BoardsService {
@@ -18,7 +19,9 @@ export class BoardsService {
     }
 
     // 게시글 작성 기능
-    createBoard(author: string, title: string, contents: string) {
+    createBoard(createBoardDto: CreateBoardDto) {
+        const {author, title, contents} = createBoardDto;
+
         const board: Board = {
             id: this.boards.length + 1, // 임시 Auto Increament 기능
             author,
