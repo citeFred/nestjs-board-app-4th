@@ -3,16 +3,19 @@ import { Board } from './boards.entity';
 import { BoardStatus } from './boards-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { BoardsRepository } from './boards.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BoardsService {
     // DB Access (Repository 계층)
-    constructor(private boardsRepository: BoardsRepository) {}
-
+    constructor(
+        @InjectRepository(Board)
+        private boardsRepository: Repository<Board>
+    ){}
     // 게시글 조회 기능
     async getAllBoards(): Promise<Board[]> {
-        const foundBoards = await this.boardsRepository.findAll(); // 데이터베이스에서 모든 게시글을 가져오는 메서드
+        const foundBoards = await this.boardsRepository.find(); // 데이터베이스에서 모든 게시글을 가져오는 메서드
         return foundBoards; // boards가 undefined일 경우 오류 발생
     }
     
@@ -42,7 +45,7 @@ export class BoardsService {
     // }
 
     // 게시글 작성 기능
-    async createBoard(createBoardDto: CreateBoardDto): Promise<string> {
+    async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
         const { author, title, contents } = createBoardDto; // 구조분해할당 표현식 권장됨
 
         if (!author || !title || !contents) {
@@ -56,7 +59,7 @@ export class BoardsService {
             status: BoardStatus.PUBLIC,
         };
 
-        const createdBoard = await this.boardsRepository.saveBoard(newBoard); 
+        const createdBoard = await this.boardsRepository.save(newBoard); 
 
         return createdBoard;
     }
