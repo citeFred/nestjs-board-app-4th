@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Board } from './boards.entity';
 import { BoardStatus } from './boards-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -11,7 +11,12 @@ export class BoardsService {
 
     // 게시글 조회 기능
     getAllBoards(): Board[] {
-        return this.boards;
+        const foundBoards = this.boards;
+        if (foundBoards.length === 0) {
+            throw new NotFoundException('No boards found');
+        }
+
+        return foundBoards;
     }
 
     // 특정 게시글 조회 기능
@@ -20,49 +25,72 @@ export class BoardsService {
         if(!foundBoard) {
             throw new NotFoundException(`Board with ID ${id} not found`);
         }
+
         return foundBoard;
     }
 
     // 키워드(작성자)로 검색한 게시글 조회 기능
     getBoardsByKeyword(author: string): Board[] {
-        return this.boards.filter((board) => board.author === author);
+        if (!author) {
+            throw new BadRequestException('Author keyword must be provided');
+        }
+
+        const foundBoards = this.boards.filter((board) => board.author === author);
+
+        if (foundBoards.length === 0) {
+            throw new NotFoundException(`No boards found for author: ${author}`);
+        }
+
+        return foundBoards;
     }
 
     // 게시글 작성 기능
     createBoard(createBoardDto: CreateBoardDto) {
-        const {author, title, contents} = createBoardDto;
-
+        const { author, title, contents } = createBoardDto;
+        if (!author || !title || !contents) {
+            throw new BadRequestException('Author, title, and contents must be provided');
+        }
         const board: Board = {
-            id: this.boards.length + 1, // 임시 Auto Increament 기능
+            id: this.boards.length + 1,
             author,
             title,
             contents,
             status: BoardStatus.PUBLIC
-        }
-        const savedBoard = this.boards.push(board);
-        return savedBoard;
-    }
+        };
+        this.boards.push(board);
 
+        return board;
+    }
+    
     // 특정 번호의 게시글 수정
     updateBoardById(id: number, updateBoardDto: UpdateBoardDto): Board {
         const foundBoard = this.getBoardDetailById(id);
-        const {title, contents} = updateBoardDto;
+        const { title, contents } = updateBoardDto;
 
+        if (!title || !contents) {
+            throw new BadRequestException('Title and contents must be provided');
+        }
         foundBoard.title = title;
         foundBoard.contents = contents;
 
-        return foundBoard
+        return foundBoard;
     }
+
 
     // 특정 번호의 게시글 일부 수정
     updateBoardStatusById(id: number, status: BoardStatus): Board {
         const foundBoard = this.getBoardDetailById(id);
+        if (foundBoard.status === status) {
+            throw new BadRequestException(`This board is already in ${status} status`);
+        }
         foundBoard.status = status;
+
         return foundBoard;
     }
 
     // 게시글 삭제 기능
     deleteBoardById(id: number): void {
+        const foundBoard = this.getBoardDetailById(id);
         this.boards = this.boards.filter((board) => board.id != id);
     }
 }
