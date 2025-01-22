@@ -5,6 +5,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatus } from './boards-status.enum';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
+import { BoardResponseDto } from './dto/board-response.dto';
 
 @Controller('api/boards')
 @UsePipes(ValidationPipe)
@@ -14,8 +15,10 @@ export class BoardsController {
 
     // 게시글 조회 기능
     @Get('/')
-    async getAllBoards(): Promise<Board[]> {
-        return await this.boardsService.getAllBoards(); // 비동기적으로 게시글 가져오기
+    async getAllBoards(): Promise<BoardResponseDto[]> {
+        const boards: Board[] = await this.boardsService.getAllBoards();
+        const boardsResponseDto = boards.map(board => new BoardResponseDto(board));
+        return boardsResponseDto
     }
 
     // // 특정 게시글 조회 기능
