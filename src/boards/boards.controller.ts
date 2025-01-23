@@ -15,8 +15,10 @@ export class BoardsController {
 
     // 게시글 조회 기능
     @Get('/')
-    async getAllBoards(): Promise<Board[]> {
-	    return await this.boardsService.getAllBoards();
+    async getAllBoards(): Promise<BoardResponseDto[]> {
+	    const boards: Board[] = await this.boardsService.getAllBoards();
+        const boardsResponseDto = boards.map(board => new BoardResponseDto(board));
+        return boardsResponseDto;
     }
 
     // // 특정 게시글 조회 기능
