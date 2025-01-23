@@ -5,6 +5,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatus } from './boards-status.enum';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
+import { BoardResponseDto } from './dto/board-response.dto';
 
 @Controller('api/boards')
 @UsePipes(ValidationPipe)
@@ -32,7 +33,7 @@ export class BoardsController {
 
     // 게시글 작성 기능
     @Post('/')
-    createBoard(@Body() createBoardDto: CreateBoardDto) {
+    async createBoard(@Body() createBoardDto: CreateBoardDto): Promise<string> {
         return this.boardsService.createBoard(createBoardDto);
     }
 
