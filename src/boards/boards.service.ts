@@ -57,8 +57,8 @@ export class BoardsService {
             status: BoardStatus.PUBLIC
         };
         
-        const createdBoard = await this.boardRepository.saveBoard(board);
-        return createdBoard;
+        const message = await this.boardRepository.saveBoard(board);
+        return message;
     }
     
     // // 특정 번호의 게시글 수정
