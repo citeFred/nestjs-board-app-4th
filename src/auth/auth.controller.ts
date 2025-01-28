@@ -1,9 +1,10 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/auth')
 export class AuthController {
@@ -23,13 +24,20 @@ export class AuthController {
 
         // [2] JWT를 쿠키에 저장
         res.cookie('Authorization', accessToken, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,
             maxAge: 360000,
-            sameSite: 'none'
+            sameSite: 'lax'
         });
         
         res.send({message: "Login Success"});
+    }
+
+    @Post('/test')
+    @UseGuards(AuthGuard('jwt')) // @UseGuards 는 해당 인증 가드가 적용되는, AuthGuard는 인증가드가 어떤 전략을 사용할지 결정
+    testForAuth(@Req() req: Request) {
+        console.log(req.user); // 인증된 사용자의 정보 출력
+        return { message : 'Authenticated User', user: req.user};
     }
 
 }
