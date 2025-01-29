@@ -21,6 +21,19 @@ export class BoardsService {
         return foundBoards;
     }
 
+    // 로그인된 유저가 작성한 게시글 조회 기능
+    async getMyAllBoards(logginedUser: User): Promise<Board[]> {
+        // 기본 조회에서는 엔터티를 즉시로딩으로 변경해야 User에 접근 할 수 있다.
+        // const foundBoards = await this.boardRepository.findBy({ user: logginedUser });
+
+        // 쿼리 빌더를 통해 lazy loading 설정된 엔터티와 관계를 가진 엔터티(User) 명시적 접근이 가능하다.
+        const foundBoards = await this.boardRepository.createQueryBuilder('board')
+            .leftJoinAndSelect('board.user', 'user') // 사용자 정보를 조인(레이지 로딩 상태에서 User 추가 쿼리)
+            .where('board.userId = :userId', { userId : logginedUser.id })
+            .getMany();
+        return foundBoards;
+    }
+
     // 특정 게시글 조회 기능
     async getBoardDetailById(id: number): Promise<Board> {
         const foundBoard = await this.boardRepository.findOneBy({ id: id });
