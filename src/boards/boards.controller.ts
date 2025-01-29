@@ -68,8 +68,9 @@ export class BoardsController {
         return boardResponseDto;
     }
 
-    // 특정 번호의 게시글 일부 수정
+    // 특정 번호의 게시글 일부 수정<ADMIN 기능>
     @Patch('/:id')
+    @Roles(UserRole.ADMIN)
     async updateBoardStatusById(
         @Param('id') id: number,
         @Body('status', BoardStatusValidationPipe) status: BoardStatus): Promise<void> {
