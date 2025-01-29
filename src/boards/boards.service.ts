@@ -52,7 +52,8 @@ export class BoardsService {
             author, // author: createBoardDto.author
             title,
             contents,
-            status: BoardStatus.PUBLIC
+            status: BoardStatus.PUBLIC,
+            user: null
         };
         const createdBoard = await this.boardRepository.save(newBoard);
         return createdBoard;
