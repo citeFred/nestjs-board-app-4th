@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ArticleModule } from './articles/article.module';
+import { ArticleModule } from './article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { AuthModule } from './auth/auth.module';
