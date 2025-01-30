@@ -14,7 +14,7 @@ export class AuthService {
         private userService: UserService,
     ){}
 
-    // 로그인 기능
+    // Sign-In
     async signIn(signInRequestDto : SignInRequestDto): Promise<string> {
         this.logger.verbose(`User with email: ${signInRequestDto.email} is signing in`);
 

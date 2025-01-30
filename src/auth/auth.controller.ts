@@ -9,7 +9,7 @@ export class AuthController {
     
     constructor(private authService: AuthService){}
 
-    // 로그인 기능
+    // Sign-In
     @Post('/signin')
     async signIn(@Body() signInRequestDto: SignInRequestDto, @Res() res:Response): Promise<void> {
         this.logger.verbose(`User with email: ${signInRequestDto.email} is try to signing in`);

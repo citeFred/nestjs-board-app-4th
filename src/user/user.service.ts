@@ -15,7 +15,7 @@ export class UserService {
         private userRepository: Repository<User>,
     ) {}
 
-    // 회원 가입 기능
+    // CREATE
     async createUser(createUserRequestDto: CreateUserRequestDto): Promise<User> {
         this.logger.verbose(`Visitor is creating a new account with title: ${createUserRequestDto.email}`);
 
@@ -41,7 +41,7 @@ export class UserService {
         return createdUser;
     }
 
-    // Email로 회원 조회 기능
+    // READ - by email
     async findUserByEmail(email: string): Promise<User> {
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if(!existingUser) {
@@ -50,6 +50,7 @@ export class UserService {
         return existingUser;
     }
 
+    // Existing Checker
     async checkEmailExist(email: string): Promise<void> {
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if(existingUser) {
@@ -57,6 +58,7 @@ export class UserService {
         }
     }
 
+    // Hashing password
     async hashPassword(password: string): Promise<string> {
         const salt = await bcrypt.genSalt();
         return await bcrypt.hash(password, salt);

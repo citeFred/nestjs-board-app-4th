@@ -9,7 +9,7 @@ export class UserController {
 
   constructor(private readonly userService: UserService) {}
 
-  // 회원 가입 기능
+  // CREATE
   @Post('/')
   async createUser(@Body() createUserRequestDto: CreateUserRequestDto): Promise<UserResponseDto> {
       this.logger.verbose(`Visitor is try to creating a new account with title: ${createUserRequestDto.email}`);
