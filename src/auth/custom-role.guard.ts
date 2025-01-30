@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { UserRole } from "./user-role.enum";
+import { UserRole } from "../user/user-role.enum";
 import { Reflector } from "@nestjs/core";
-import { User } from "./user.entity";
+import { User } from "../user/user.entity";
 import { ROLES_KEY } from "./roles.decorator";
 
 @Injectable()

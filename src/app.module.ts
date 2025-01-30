@@ -7,13 +7,15 @@ import { GlobalModule } from './global.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { UnauthorizedExceptionFilter } from './common/filters/unauthorization.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     GlobalModule,
     TypeOrmModule.forRoot(typeOrmConfig),
     ArticleModule,
-    AuthModule
+    AuthModule,
+    UserModule
   ],
   providers: [
     {

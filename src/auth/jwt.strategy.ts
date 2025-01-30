@@ -2,18 +2,16 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { User } from "./user.entity";
+import { User } from "../user/user.entity";
 import { Repository } from "typeorm";
 import * as dotenv from 'dotenv';
 import { Request } from "express";
+import { UserService } from "src/user/user.service";
 
 dotenv.config();
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(
-        @InjectRepository(User)
-        private userRepository: Repository<User>,
-    ){
+    constructor(private userService: UserService){
         // [3] Cookie에 있는 JWT 토큰 추출
         super({
             secretOrKey: process.env.JWT_SECRET, // 검증하기 위한 Secret Key
@@ -25,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     async validate(payload) {
         const { email } = payload;
 
-        const user: User = await this.userRepository.findOneBy({ email });
+        const user: User = await this.userService.findUserByEmail(email);
 
         if (!user) {
             throw new UnauthorizedException();
