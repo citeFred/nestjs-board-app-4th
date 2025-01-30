@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserRole } from "./users-role.enum";
-import { Board } from "src/boards/boards.entity";
+import { UserRole } from "./user-role.enum";
+import { Article } from "src/articles/article.entity";
 
 @Entity()
 export class User {
@@ -19,6 +19,6 @@ export class User {
     @Column()
     role: UserRole;
 
-    @OneToMany(Type => Board, board => board.author, { eager: false })
-    boards: Board[];
+    @OneToMany(Type => Article, article => article.author, { eager: false })
+    articles: Article[];
 }
