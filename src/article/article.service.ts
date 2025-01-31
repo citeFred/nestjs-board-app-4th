@@ -17,7 +17,7 @@ export class ArticleService {
     ){}
 
     // CREATE
-    async createArticle(createArticleRequestDto: CreateArticleRequestDto, logginedUser: User): Promise<Article> {
+    async createArticle(createArticleRequestDto: CreateArticleRequestDto, logginedUser: User): Promise<void> {
         this.logger.verbose(`User: ${logginedUser.username} is creating a new article with title: ${createArticleRequestDto.title}`);
 
         const { title, contents } = createArticleRequestDto;
@@ -32,10 +32,9 @@ export class ArticleService {
             user: logginedUser
         });
 
-        const createdArticle = await this.articleRepository.save(newArticle);
+        await this.articleRepository.save(newArticle);
 
-        this.logger.verbose(`Article title with ${createdArticle.title} created Successfully`);
-        return createdArticle;
+        this.logger.verbose(`Article title with ${newArticle.title} created Successfully`);
     }
 
     // READ - all
@@ -95,7 +94,7 @@ export class ArticleService {
     }
     
     // UPDATE - by id
-    async updateArticleById(id: number, updateArticleRequestDto: UpdateArticleRequestDto): Promise<Article> {
+    async updateArticleById(id: number, updateArticleRequestDto: UpdateArticleRequestDto): Promise<void> {
         this.logger.verbose(`Updating a article by id: ${id} with updateArticleRequestDto`);
 
         const foundArticle = await this.getArticleDetailById(id);
@@ -105,10 +104,9 @@ export class ArticleService {
         }
         foundArticle.title = title;
         foundArticle.contents = contents;
-        const updatedArticle = await this.articleRepository.save(foundArticle)
+        await this.articleRepository.save(foundArticle)
 
         this.logger.verbose(`Updated a article by ${id} Successfully`);
-        return updatedArticle;
     }
 
     // UPDATE - status <ADMIN>

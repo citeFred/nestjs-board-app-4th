@@ -3,7 +3,6 @@ import { CreateUserRequestDto } from './dto/create-user-request.dto';
 import { User } from 'src/user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserRole } from 'src/user/entities/user-role.enum';
 import * as bcrypt from 'bcryptjs'
 
 @Injectable()
@@ -16,7 +15,7 @@ export class UserService {
     ) {}
 
     // CREATE
-    async createUser(createUserRequestDto: CreateUserRequestDto): Promise<User> {
+    async createUser(createUserRequestDto: CreateUserRequestDto): Promise<void> {
         this.logger.verbose(`Visitor is creating a new account with title: ${createUserRequestDto.email}`);
 
         const { username, password, email, role } = createUserRequestDto;
@@ -35,10 +34,9 @@ export class UserService {
             role,
         });
 
-        const createdUser = await this.userRepository.save(newUser);
+        await this.userRepository.save(newUser);
         
-        this.logger.verbose(`New account email with ${createdUser.email} created Successfully`);
-        return createdUser;
+        this.logger.verbose(`New account email with ${newUser.email} created Successfully`);
     }
 
     // READ - by email
