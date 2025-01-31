@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import { ArticleStatus } from "./article-status.enum";
-import { User } from "src/user/user.entity";
+import { User } from "src/user/entities/user.entity";
 import { CommonEntity } from "src/common/entities/common.entity";
 
 @Entity()
