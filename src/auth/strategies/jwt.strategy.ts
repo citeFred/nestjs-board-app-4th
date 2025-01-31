@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { User } from "../user/entities/user.entity";
+import { User } from "../../user/entities/user.entity";
 import * as dotenv from 'dotenv';
 import { UserService } from "src/user/user.service";
 
