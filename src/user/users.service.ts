@@ -6,12 +6,12 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs'
 
 @Injectable()
-export class UserService {
-    private readonly logger = new Logger(UserService.name);
+export class UsersService {
+    private readonly logger = new Logger(UsersService.name);
     
     constructor(
         @InjectRepository(User)
-        private userRepository: Repository<User>,
+        private usersRepository: Repository<User>,
     ) {}
 
     // CREATE
@@ -27,21 +27,21 @@ export class UserService {
 
         const hashedPassword = await this.hashPassword(password);
 
-        const newUser = this.userRepository.create({
+        const newUser = this.usersRepository.create({
             username, 
             password: hashedPassword,
             email,
             role,
         });
 
-        await this.userRepository.save(newUser);
+        await this.usersRepository.save(newUser);
         
         this.logger.verbose(`New account email with ${newUser.email} created Successfully`);
     }
 
     // READ - by email
     async findUserByEmail(email: string): Promise<User> {
-        const existingUser = await this.userRepository.findOne({ where: { email } });
+        const existingUser = await this.usersRepository.findOne({ where: { email } });
         if(!existingUser) {
             throw new NotFoundException('User not found');
         }
@@ -50,7 +50,7 @@ export class UserService {
 
     // Existing Checker
     async checkEmailExist(email: string): Promise<void> {
-        const existingUser = await this.userRepository.findOne({ where: { email } });
+        const existingUser = await this.usersRepository.findOne({ where: { email } });
         if(existingUser) {
             throw new ConflictException('Email already exists');
         }

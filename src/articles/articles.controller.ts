@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpStatus, Logger, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ArticleService } from './article.service';
+import { ArticlesService } from './articles.service';
 import { Article } from './entities/article.entity';
 import { CreateArticleRequestDto } from './dto/create-article-request.dto';
 import { ArticleResponseDto } from './dto/article-response.dto';
@@ -17,10 +17,10 @@ import { Roles } from 'src/auth/custom-guards-decorators/roles.decorator';
 
 @Controller('api/articles')
 @UseGuards(AuthGuard(), RolesGuard)
-export class ArticleController {
-    private readonly logger = new Logger(ArticleController.name);
+export class ArticlesController {
+    private readonly logger = new Logger(ArticlesController.name);
 
-    constructor(private articleService: ArticleService){}
+    constructor(private articlesService: ArticlesService){}
 
     // CREATE
     @Post('/')
@@ -29,7 +29,7 @@ export class ArticleController {
         @GetUser() logginedUser: User): Promise<ApiResponseDto<void>> {
         this.logger.verbose(`User: ${logginedUser.username} is try to creating a new article with title: ${createArticleRequestDto.title}`);
 
-        await this.articleService.createArticle(createArticleRequestDto, logginedUser)
+        await this.articlesService.createArticle(createArticleRequestDto, logginedUser)
 
         this.logger.verbose(`Article created Successfully`);
         return new ApiResponseDto(true, HttpStatus.CREATED, 'Article created Successfully');
@@ -41,7 +41,7 @@ export class ArticleController {
     async getAllArticles(): Promise<ApiResponseDto<ArticleResponseDto[]>> {
         this.logger.verbose(`Try to Retrieving all Articles`);
 
-	    const articles: Article[] = await this.articleService.getAllArticles();
+	    const articles: Article[] = await this.articlesService.getAllArticles();
         const articlesResponseDto = articles.map(article => new ArticleResponseDto(article));
 
         this.logger.verbose(`Retrieved all articles list Successfully`);
@@ -53,7 +53,7 @@ export class ArticleController {
     async getMyAllArticles(@GetUser() logginedUser: User): Promise<ApiResponseDto<ArticleResponseDto[]>> {
         this.logger.verbose(`Try to Retrieving ${logginedUser.username}'s all Articles`);
 
-        const articles: Article[] = await this.articleService.getMyAllArticles(logginedUser);
+        const articles: Article[] = await this.articlesService.getMyAllArticles(logginedUser);
         const articlesResponseDto = articles.map(article => new ArticleResponseDto(article));
 
         this.logger.verbose(`Retrieved ${logginedUser.username}'s all Articles list Successfully`);
@@ -65,7 +65,7 @@ export class ArticleController {
     async getArticleDetailById(@Param('id') id: number): Promise<ApiResponseDto<ArticleResponseDto>> {
         this.logger.verbose(`Try to Retrieving a article by id: ${id}`);
 
-        const articleResponseDto = new ArticleResponseDto(await this.articleService.getArticleDetailById(id));
+        const articleResponseDto = new ArticleResponseDto(await this.articlesService.getArticleDetailById(id));
 
         this.logger.verbose(`Retrieved a article by ${id} details Successfully`);
         return new ApiResponseDto(true, HttpStatus.OK, 'Article retrive Successfully', articleResponseDto);
@@ -76,7 +76,7 @@ export class ArticleController {
     async getArticlesByKeyword(@Query('author') author: string): Promise<ApiResponseDto<SearchArticleResponseDto[]>> {
         this.logger.verbose(`Try to Retrieving a article by author: ${author}`);
 
-        const articles: Article[] = await this.articleService.getArticlesByKeyword(author);
+        const articles: Article[] = await this.articlesService.getArticlesByKeyword(author);
         const articlesResponseDto = articles.map(article => new SearchArticleResponseDto(article));
 
         this.logger.verbose(`Retrieved articles list by ${author} Successfully`);
@@ -90,7 +90,7 @@ export class ArticleController {
         @Body() updateArticleRequestDto: UpdateArticleRequestDto): Promise<ApiResponseDto<void>> {
         this.logger.verbose(`Try to Updating a article by id: ${id} with updateArticleRequestDto`);
 
-        await this.articleService.updateArticleById(id, updateArticleRequestDto)
+        await this.articlesService.updateArticleById(id, updateArticleRequestDto)
 
         this.logger.verbose(`Updated a article by ${id} Successfully`);
         return new ApiResponseDto(true, HttpStatus.NO_CONTENT, 'Article update Successfully');
@@ -104,7 +104,7 @@ export class ArticleController {
         @Body('status', ArticleStatusValidationPipe) status: ArticleStatus): Promise<ApiResponseDto<void>> {
         this.logger.verbose(`ADMIN is trying to Updating a article by id: ${id} with status: ${status}`);
 
-        await this.articleService.updateArticleStatusById(id, status);
+        await this.articlesService.updateArticleStatusById(id, status);
 
         this.logger.verbose(`ADMIN Updated a article's by ${id} status to ${status} Successfully`);
         return new ApiResponseDto(true, HttpStatus.NO_CONTENT, 'Article status changed Successfully');
@@ -116,7 +116,7 @@ export class ArticleController {
     async deleteArticleById(@Param('id') id: number, @GetUser() logginedUser: User): Promise<ApiResponseDto<void>> {
         this.logger.verbose(`User: ${logginedUser.username} is trying to Deleting a article by id: ${id}`);
 
-        await this.articleService.deleteArticleById(id, logginedUser);
+        await this.articlesService.deleteArticleById(id, logginedUser);
 
         this.logger.verbose(`Deleted a article by id: ${id} Successfully`);
         return new ApiResponseDto(true, HttpStatus.NO_CONTENT, 'Article delete Successfully');
