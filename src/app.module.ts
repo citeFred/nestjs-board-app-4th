@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { UnauthorizedExceptionFilter } from './common/filters/unauthorization.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { UsersModule } from './user/users.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
