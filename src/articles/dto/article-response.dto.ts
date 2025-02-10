@@ -8,7 +8,7 @@ export class ArticleResponseDto {
     title: string;
     contents: string;
     status: ArticleStatus;
-    user: UserResponseDto;
+    // user: UserResponseDto;
 
     constructor(article: Article) {
         this.id = article.id;
@@ -16,6 +16,6 @@ export class ArticleResponseDto {
         this.title = article.title;
         this.contents = article.contents;
         this.status = article.status;
-        this.user = new UserResponseDto(article.user);
+        // this.user = new UserResponseDto(article.user);
     }
 }
