@@ -61,7 +61,7 @@ export class ArticlesController {
     }
 
     // READ - by id
-    @Get('/:id')
+    @Get('/:id/detail')
     async getArticleDetailById(@Param('id') id: number): Promise<ApiResponseDto<ArticleResponseDto>> {
         this.logger.verbose(`Try to Retrieving a article by id: ${id}`);
 
@@ -72,8 +72,8 @@ export class ArticlesController {
     }
 
     // READ - by keyword
-    @Get('/search/:keyword')
-    async getArticlesByKeyword(@Query('author') author: string): Promise<ApiResponseDto<SearchArticleResponseDto[]>> {
+    @Get('/search')
+    async getArticlesByKeyword(@Query('keyword') author: string): Promise<ApiResponseDto<SearchArticleResponseDto[]>> {
         this.logger.verbose(`Try to Retrieving a article by author: ${author}`);
 
         const articles: Article[] = await this.articlesService.getArticlesByKeyword(author);
