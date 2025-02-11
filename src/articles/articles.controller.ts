@@ -16,7 +16,7 @@ import { GetUser } from 'src/auth/custom-guards-decorators/get-user.decorator';
 import { Roles } from 'src/auth/custom-guards-decorators/roles.decorator';
 
 @Controller('api/articles')
-// @UseGuards(AuthGuard(), RolesGuard)
+@UseGuards(AuthGuard(), RolesGuard)
 export class ArticlesController {
     private readonly logger = new Logger(ArticlesController.name);
 
@@ -37,7 +37,7 @@ export class ArticlesController {
 
     // READ - all
     @Get('/')
-    // @Roles(UserRole.USER)
+    @Roles(UserRole.USER)
     async getAllArticles(): Promise<ApiResponseDto<ArticleResponseDto[]>> {
         this.logger.verbose(`Try to Retrieving all Articles`);
 
