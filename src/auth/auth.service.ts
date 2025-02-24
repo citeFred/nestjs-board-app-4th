@@ -1,12 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs'
 import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserRequestDto } from 'src/users/dto/create-user-request.dto';
-import { User } from 'src/users/entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +12,6 @@ export class AuthService {
     constructor(
         private jwtService: JwtService,
         private userService: UsersService,
-        @InjectRepository(User)
-        private usersRepository: Repository<User>,
     ){}
 
     // Sign-Up
@@ -28,20 +23,18 @@ export class AuthService {
             throw new BadRequestException('Something went wrong.');
         }
 
-        await this.checkEmailExist(email);
+        await this.userService.checkEmailExist(email);
 
         const hashedPassword = await this.hashPassword(password);
 
-        const newUser = this.usersRepository.create({
+        await this.userService.createUser({
             username, 
             password: hashedPassword,
             email,
             role,
         });
-
-        await this.usersRepository.save(newUser);
         
-        this.logger.verbose(`New account email with ${newUser.email} created Successfully`);
+        this.logger.verbose(`New account created Successfully`);
     }
 
     // Sign-In
@@ -71,14 +64,6 @@ export class AuthService {
         } catch (error) {
             this.logger.error(`Invalid credentials or Internal Server error`);
             throw error;
-        }
-    }
-
-    // Existing Checker
-    async checkEmailExist(email: string): Promise<void> {
-        const existingUser = await this.usersRepository.findOne({ where: { email } });
-        if(existingUser) {
-            throw new ConflictException('Email already exists');
         }
     }
 
