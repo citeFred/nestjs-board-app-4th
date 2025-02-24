@@ -9,14 +9,5 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
 
-  // CREATE
-  @Post('/')
-  async createUser(@Body() createUserRequestDto: CreateUserRequestDto): Promise<ApiResponseDto<void>> {
-      this.logger.verbose(`Visitor is try to creating a new account with title: ${createUserRequestDto.email}`);
-
-      await this.usersService.createUser(createUserRequestDto)
-
-      this.logger.verbose(`New account created Successfully`);
-      return new ApiResponseDto(true, HttpStatus.CREATED, 'User created Successfully');
-    }
+  // 조회, 수정, 삭제 (접근권한이 필요하다. => ADMIN, 또는 본인)
 }
